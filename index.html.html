@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Protótipo – Pedido de kit escolar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#F4F6FA;--sf:#fff;--ink:#14213D;--mu:#5B657A;--ln:#D9DEE8;--ac:#FCBF49;--ok:#1F8A70;--okbg:#DDF3EC;--wa:#DCF8C6;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1424;--sf:#172036;--ink:#EEF1F8;--mu:#A3ADC4;--ln:#2A3552;--ok:#4CC9A6;--okbg:#17352E;--wa:#1F4A3A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1424;--sf:#172036;--ink:#EEF1F8;--mu:#A3ADC4;--ln:#2A3552;--ok:#4CC9A6;--okbg:#17352E;--wa:#1F4A3A;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.5}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 48px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 0}
+.brand{font-weight:800;font-size:1.25rem;letter-spacing:-.01em}
+.brand i{display:inline-block;width:14px;height:14px;background:var(--ac);border-radius:3px;margin-right:8px;transform:rotate(-12deg)}
+.tabs{display:flex;background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:3px}
+.tabs button{border:0;background:none;color:var(--mu);font:inherit;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer}
+.tabs button.on{background:var(--ink);color:var(--bg)}
+.note{background:var(--ac);color:#14213D;border-radius:10px;padding:8px 14px;font-size:.9rem;font-weight:600;margin-bottom:18px}
+h1{font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.08;letter-spacing:-.02em;margin:6px 0 4px;font-weight:800}
+.sub{color:var(--mu);margin:0 0 22px;max-width:56ch}
+.steps{display:flex;gap:6px;margin-bottom:20px;list-style:none;padding:0}
+.steps li{flex:1;font-size:.85rem;color:var(--mu);border-top:4px solid var(--ln);padding-top:6px;font-weight:600}
+.steps li.on{border-color:var(--ac);color:var(--ink)}
+.steps li.done{border-color:var(--ok);color:var(--ok)}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.grid{grid-template-columns:1fr}.steps li span{display:none}}
+label{display:block;font-weight:600;font-size:.92rem;margin-bottom:4px}
+input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--ln);border-radius:9px;padding:10px 12px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.full{grid-column:1/-1}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 20px;cursor:pointer;background:var(--ac);color:#14213D}
+.btn.ghost{background:none;border:1px solid var(--ln);color:var(--ink)}
+.err{color:#C0392B;font-weight:600;margin-top:10px;min-height:1.2em}
+.layout{display:grid;grid-template-columns:1fr 250px;gap:16px;align-items:start}
+@media (max-width:760px){.layout{grid-template-columns:1fr}}
+h3{margin:18px 0 6px;font-size:1rem}
+h3:first-child{margin-top:0}
+.item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ln)}
+.item:last-child{border:0}
+.item input{width:20px;height:20px;accent-color:var(--ok);flex:none}
+.item span{flex:1}
+.item small{color:var(--mu);display:block}
+.item b{white-space:nowrap}
+.sum{position:sticky;top:12px}
+.sum .tot{font-size:1.8rem;font-weight:800;margin:4px 0 0}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--ln);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer}
+.opt.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ac)}
+.opt input{width:auto;margin-top:5px}
+.opt p{margin:2px 0 0;color:var(--mu);font-size:.9rem}
+.opt select{margin-top:8px;max-width:260px}
+.ok{background:var(--okbg);color:var(--ok);border-radius:12px;padding:14px 16px;font-weight:700;margin-bottom:16px}
+.chat{background:var(--bg);border-radius:12px;padding:14px;border:1px dashed var(--ln)}
+.bub{background:var(--wa);color:#14213D;border-radius:4px 14px 14px 14px;padding:10px 14px;max-width:420px;white-space:pre-line;font-size:.93rem}
+.dark-bub{color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--ln);vertical-align:middle}
+th{color:var(--mu);font-weight:600}
+.tw{overflow-x:auto}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px}
+.kpi b{font-size:1.5rem;display:block}
+.kpi span{color:var(--mu);font-size:.85rem}
+td select{padding:6px 8px;width:auto}
+.hide{display:none}
+@media (prefers-reduced-motion:no-preference){.card{animation:in .25s ease-out}@keyframes in{from{opacity:.4;transform:translateY(6px)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><i></i>Livraria Escolar</div>
+  <div class="tabs" role="tablist">
+    <button class="on" id="t1" onclick="tab(1)">Visão dos pais</button>
+    <button id="t2" onclick="tab(2)">Painel da livraria</button>
+  </div>
+</header>
+<div class="note">Protótipo de simulação: séries, itens e preços são exemplos inventados.</div>
+<main id="app"></main>
+</div>
+<script>
+const K0={
+"1º ano":[["Livros","Língua Portuguesa 1",89.9,1],["Livros","Matemática 1",84.9,1],["Material","Kit de cadernos (4 un.)",36,1],["Material","Estojo completo",42.5,1],["Opcionais","Camiseta da farda",48,0],["Opcionais","Mochila escolar",129,0]],
+"5º ano":[["Livros","Língua Portuguesa 5",94.9,1],["Livros","Matemática 5",92.5,1],["Livros","Ciências 5",88,1],["Material","Kit de cadernos (6 un.)",54,1],["Material","Régua, compasso e esquadros",27.9,1],["Opcionais","Camiseta da farda",48,0],["Opcionais","Bermuda da farda",58,0]],
+"9º ano":[["Livros","Língua Portuguesa 9",102.9,1],["Livros","Matemática 9",99.9,1],["Livros","Geografia 9",91.5,1],["Livros","Inglês 9",96,1],["Material","Kit de cadernos (8 un.)",72,1],["Material","Calculadora científica",69.9,0],["Opcionais","Camiseta da farda",48,0],["Opcionais","Agasalho da farda",139,0]]
+};
+const gen=(n,i)=>[["Livros",(i<5?"Linguagens":"Língua Portuguesa")+" – "+n,70+i*3,1],["Livros","Matemática – "+n,68+i*3,1],["Material","Kit de cadernos",30+i*2,1],["Material","Estojo e material básico",35,1],["Opcionais","Camiseta da farda",48,0]];
+const KITS={};["Infantil 1","Infantil 2","Infantil 3","Infantil 4","Infantil 5","1º ano","2º ano","3º ano","4º ano","5º ano","6º ano","7º ano","8º ano","9º ano","1ª série EM","2ª série EM","3ª série EM"].forEach((n,i)=>{KITS[n]=K0[n]||gen(n,i)});
+const STAT=["Recebido","Pago","Reservado","Separado","Retirado"];
+let orders=[
+{id:1038,aluno:"Helena S.",serie:"5º ano",v:352.4,pg:"Pix",st:"Retirado"},
+{id:1039,aluno:"Pedro A.",serie:"1º ano",v:253.3,pg:"Cartão 3x",st:"Separado"},
+{id:1040,aluno:"Marina L.",serie:"9º ano",v:560.1,pg:"Reserva",st:"Reservado"},
+{id:1041,aluno:"Lucas M.",serie:"5º ano",v:306.9,pg:"Pix",st:"Pago"}
+];
+let S={step:1,resp:"",zap:"",aluno:"",serie:"",sel:{},dia:"Segunda, 8h–12h",pay:"pix",parc:3,msg:"",id:0};
+const $=document.getElementById("app");
+const R=n=>n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const total=()=>!S.serie?0:KITS[S.serie].reduce((a,it,i)=>a+(S.sel[i]?it[2]:0),0);
+const payTxt=()=>S.pay=="pix"?"Pix à vista (5% de desconto)":S.pay=="card"?"Cartão em "+S.parc+"x":"Reservar e pagar na retirada";
+const payVal=()=>S.pay=="pix"?total()*.95:total();
+function tab(n){document.getElementById("t1").className=n==1?"on":"";document.getElementById("t2").className=n==2?"on":"";n==1?parents():admin()}
+function bar(){const L=["Aluno","Kit","Pagamento","Confirmação"];return '<ol class="steps">'+L.map((l,i)=>'<li class="'+(S.step==i+1?"on":S.step>i+1?"done":"")+'">'+(i+1)+' <span>'+l+'</span></li>').join("")+'</ol>'}
+function head(){return '<h1>Monte o kit escolar</h1><p class="sub">Escolha a série, desmarque o que você já tem e combine a retirada. A livraria avisa por WhatsApp quando o pedido estiver pronto.</p>'+bar()}
+function parents(){
+ if(S.step==1){
+  $.innerHTML=head()+'<div class="card"><div class="grid">'+
+  '<div class="full"><label for="a">Nome do responsável</label><input id="a" value="'+S.resp+'" oninput="S.resp=this.value" autocomplete="name"></div>'+
+  '<div><label for="b">WhatsApp</label><input id="b" value="'+S.zap+'" oninput="S.zap=this.value" placeholder="(85) 90000-0000" inputmode="tel"></div>'+
+  '<div><label for="c">Nome do aluno</label><input id="c" value="'+S.aluno+'" oninput="S.aluno=this.value"></div>'+
+  '<div class="full"><label for="d">Série</label><select id="d" onchange="pickSerie(this.value)"><option value="">Selecione a série</option>'+Object.keys(KITS).map(k=>'<option'+(S.serie==k?" selected":"")+'>'+k+'</option>').join("")+'</select></div>'+
+  '</div><div class="err" id="e"></div><div class="actions"><span></span><button class="btn" onclick="go1()">Ver o kit</button></div></div>';
+ } else if(S.step==2){
+  const K=KITS[S.serie];const gr=[...new Set(K.map(x=>x[0]))];
+  $.innerHTML=head()+'<div class="layout"><div class="card">'+gr.map(g=>'<h3>'+g+'</h3>'+K.map((it,i)=>it[0]!=g?"":'<label class="item"><input type="checkbox" '+(S.sel[i]?"checked":"")+' onchange="tog('+i+')"><span>'+it[1]+'</span><b>'+R(it[2])+'</b></label>').join("")).join("")+
+  '</div><aside class="card sum"><div style="color:var(--mu)">Kit do '+S.serie+'<br>'+S.aluno+'</div><div class="tot" id="tt">'+R(total())+'</div><div class="actions"><button class="btn ghost" onclick="S.step=1;parents()">Voltar</button><button class="btn" onclick="S.step=3;parents()">Pagamento</button></div></aside></div>';
+ } else if(S.step==3){
+  const o=(k,t,d,x)=>'<label class="opt '+(S.pay==k?"on":"")+'"><input type="radio" name="p" '+(S.pay==k?"checked":"")+' onchange="S.pay=\''+k+'\';parents()"><div><b>'+t+'</b><p>'+d+'</p>'+(x||"")+'</div></label>';
+  const par='<select aria-label="Parcelas" onchange="S.parc=+this.value;parents()">'+[2,3,4,5,6,8,10].map(n=>'<option value="'+n+'"'+(S.parc==n?" selected":"")+'>'+n+'x de '+R(total()/n)+'</option>').join("")+'</select>';
+  $.innerHTML=head()+'<div class="card"><h3>Retirada no balcão</h3><select aria-label="Horário de retirada" onchange="S.dia=this.value">'+["Segunda, 8h–12h","Terça, 14h–18h","Quarta, 8h–12h","Sábado, 8h–11h"].map(d=>'<option'+(S.dia==d?" selected":"")+'>'+d+'</option>').join("")+'</select><h3>Como você quer pagar?</h3>'+
+  o("pix","Pix à vista","Total com 5% de desconto: "+R(total()*.95)+". Link de Pix enviado por WhatsApp.")+
+  o("card","Cartão de crédito parcelado","Pagamento seguro por link. Escolha o número de parcelas.",S.pay=="card"?par:"")+
+  o("res","Reservar e pagar na retirada","O kit fica separado por 7 dias. Depois disso, volta para o estoque.")+
+  '<div class="actions"><button class="btn ghost" onclick="S.step=2;parents()">Voltar</button><button class="btn" onclick="finish()">Confirmar pedido</button></div></div>';
+ } else {
+  $.innerHTML=head()+'<div class="card"><div class="ok">Pedido #'+S.id+' recebido</div><p>Resumo: kit do <b>'+S.serie+'</b> para <b>'+S.aluno+'</b>, total <b>'+R(payVal())+'</b>. Retirada: '+S.dia+'.</p><h3>Mensagem que o responsável recebe no WhatsApp</h3><div class="chat"><div class="bub">'+S.msg+'</div></div><div class="actions"><span></span><button class="btn" onclick="reset()">Fazer outro pedido</button></div></div>';
+ }
+}
+function pickSerie(v){S.serie=v;S.sel={};if(v)KITS[v].forEach((it,i)=>{S.sel[i]=1})}
+function go1(){if(!S.resp.trim()||!S.zap.trim()||!S.aluno.trim()||!S.serie){document.getElementById("e").textContent="Preencha todos os campos para ver o kit.";return}S.step=2;parents()}
+function tog(i){S.sel[i]=!S.sel[i];document.getElementById("tt").textContent=R(total())}
+function finish(){
+ S.id=1042+orders.length-3;
+ const st=S.pay=="res"?"Reservado":"Recebido";
+ S.msg="Olá, "+S.resp+"! Recebemos o pedido do kit do "+S.serie+" de "+S.aluno+".\nTotal: "+R(payVal())+"\nPagamento: "+payTxt()+"\nRetirada: "+S.dia+"\n"+(S.pay=="res"?"Seu kit fica reservado por 7 dias.":"Enviaremos o link de pagamento em seguida.")+"\nQualquer dúvida, é só responder aqui. 📚";
+ orders.push({id:S.id,aluno:S.aluno,serie:S.serie,v:payVal(),pg:S.pay=="pix"?"Pix":S.pay=="card"?"Cartão "+S.parc+"x":"Reserva",st});
+ S.step=4;parents()
+}
+function reset(){S={step:1,resp:"",zap:"",aluno:"",serie:"",sel:{},dia:"Segunda, 8h–12h",pay:"pix",parc:3,msg:"",id:0};parents()}
+function setSt(id,v){orders.find(o=>o.id==id).st=v;admin()}
+function admin(){
+ const c=s=>orders.filter(o=>o.st==s).length;
+ $.innerHTML='<h1>Painel da livraria</h1><p class="sub">Todos os pedidos, do balcão e do site, em uma lista só. Pedidos feitos na aba dos pais aparecem aqui.</p>'+
+ '<div class="kpis"><div class="kpi"><b>'+orders.length+'</b><span>Pedidos</span></div><div class="kpi"><b>'+(c("Pago")+c("Recebido"))+'</b><span>Aguardando separação</span></div><div class="kpi"><b>'+c("Reservado")+'</b><span>Reservados</span></div><div class="kpi"><b>'+c("Separado")+'</b><span>Prontos para retirada</span></div></div>'+
+ '<div class="card tw"><table><tr><th>Pedido</th><th>Aluno</th><th>Série</th><th>Valor</th><th>Pagamento</th><th>Status</th></tr>'+
+ orders.slice().reverse().map(o=>'<tr><td>#'+o.id+'</td><td>'+o.aluno+'</td><td>'+o.serie+'</td><td>'+R(o.v)+'</td><td>'+o.pg+'</td><td><select aria-label="Status do pedido '+o.id+'" onchange="setSt('+o.id+',this.value)">'+STAT.map(s=>'<option'+(o.st==s?" selected":"")+'>'+s+'</option>').join("")+'</select></td></tr>').join("")+'</table></div>';
+}
+parents();
+</script>
+</body>
+</html>
